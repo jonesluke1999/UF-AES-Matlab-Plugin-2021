@@ -38,6 +38,17 @@ switch type
         end
     case "ping-pong"
         %Ping-Pong delay
+        for i = 1:length(left_in)
+            % apply delay
+            left_out(i) = left_in(i) + BP*L_Gain*L_delay_buff(L_Delay) + 0*BP*L_Feedback*L_feedback_buff(L_Delay);
+            right_out(i) = right_in(i) + BP*R_Gain*R_delay_buff(R_Delay) + 0*BP*R_Feedback*R_feedback_buff(R_Delay);
+            %update delay buffers
+            L_delay_buff = [left_in(i); L_delay_buff(1:L_Delay-1)];
+            R_delay_buff = [right_in(i); R_delay_buff(1:R_Delay-1)];
+            %feed left output to right feedback buffer and vice versa
+            L_feedback_buff = [right_out(i); L_feedback_buff(1:L_Delay-1)];
+            R_feedback_buff = [left_out(i); R_feedback_buff(1:R_Delay-1)];
+        end
     case "tape"
         %Tape delay
     otherwise
